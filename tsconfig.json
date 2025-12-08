@@ -41,7 +41,7 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules", "eslint.config.ts", ".prettierrc"],
+  "exclude": ["node_modules", "eslint.config.ts", ".prettierrc"]
 }
