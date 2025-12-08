@@ -1,40 +1,33 @@
+import '../config/env.js';
 import type { Request, Response, NextFunction } from 'express';
-import app from '../server.js';
 import jwt from 'jsonwebtoken';
-import { config } from 'dotenv';
-config();
 
-const generateJWT = (req: Request, res: Response, next: NextFunction) => {
-  let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
+
+const vaildateJWT = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
   try {
-    const token = req.header(tokenHeaderKey);
+    if (!token) throw new Error('Access Denied');
 
     const verified = jwt.verify(token, jwtSecretKey);
     req.user = verified;
     next();
-
   } catch (error) {
     // Access Denied
     return res.status(401).send(error);
   }
-
 };
 
-const vaildateJWT = (req: Request, res: Response, next: NextFunction) => {
-  // Validate User Here
-  // Then generate JWT Token
+const generateJWT = (req: Request, res: Response, next: NextFunction) => {
+  const codeParam = req.query.code as string;
+  const userParam = req.query.user as string;
+  const payload = { code: codeParam, user: userParam };
 
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  let data = {
-    time: Date(),
-    userId: 12,
-  };
-
-  const token = jwt.sign(data, jwtSecretKey);
-
+  const token = jwt.sign(payload, jwtSecretKey);
+  res.json({ token });
   next();
 };
 
-export default generateJWT, vaildateJWT;
+export { generateJWT, vaildateJWT };
