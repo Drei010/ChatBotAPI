@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import express from 'express';
-import { vaildateJWT, generateJWT } from './middleware/auth.js';
+import { vaildateJWT } from './middleware/auth.js';
 import loginRoutes from './routes/login.js';
 
 const app = express();
