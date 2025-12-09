@@ -1,8 +1,8 @@
-import '../config/env.js';
+import { config } from '../config/env.js';
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
+const jwtSecretKey = config.jwtSecretKey;
 
 const vaildateJWT = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
@@ -20,14 +20,8 @@ const vaildateJWT = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const generateJWT = (req: Request, res: Response, next: NextFunction) => {
-  const codeParam = req.query.code as string;
-  const userParam = req.query.user as string;
-  const payload = { code: codeParam, user: userParam };
-
-  const token = jwt.sign(payload, jwtSecretKey);
-  res.json({ token });
-  next();
+const generateJWT = (payload: object) => {
+  return jwt.sign(payload, jwtSecretKey, { expiresIn: '24h' });
 };
 
 export { generateJWT, vaildateJWT };
